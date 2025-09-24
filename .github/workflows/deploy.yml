@@ -46,11 +46,11 @@ jobs:
         run: echo "TAG=${{ needs.build_and_push.outputs.tag }}" >> $GITHUB_ENV
       - name: Login to GHCR (server)
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Pull & Restart APP only
+      - name: Pull & Restart APP only (no deps)
         run: |
           set -e
           cd "$APP_PATH"
           export TAG="$TAG"
-          docker compose pull app        # ← 여기 'app'
-          docker compose up -d app       # ← 여기 'app'
+          docker compose pull app
+          docker compose up -d --no-deps app
           docker image prune -f
